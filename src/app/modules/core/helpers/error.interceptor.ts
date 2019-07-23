@@ -1,0 +1,82 @@
+import { Injectable } from '@angular/core';
+import {
+  HttpRequest,
+  HttpHandler,
+  HttpEvent,
+  HttpInterceptor,
+  HttpResponse
+} from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
+import { AppConfig } from '@app/configs/app.config';
+import { AuthenticationService } from '@app/modules/security/authentication.service';
+import { CommonService } from '@app/services/common.service';
+import { delay } from 'q';
+
+@Injectable()
+export class ErrorInterceptor implements HttpInterceptor {
+  constructor(
+    private authenticationService: AuthenticationService,
+    private commonService: CommonService
+  ) {}
+
+  // intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  //
+  //     return next.handle(request).pipe(catchError(err => {
+  //         if (err.status === 401) {
+  //             // auto logout if 401 response returned from api
+  //             this.authenticationService.logout();
+  //             location.reload(true);
+  //         }
+
+  //         const error = err.error.message || err.statusText;
+  //         return throwError(error);
+  //     }))
+
+  // }
+
+  intercept(
+    request: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    return next.handle(request).pipe(
+      tap(
+        event => {
+          if (event instanceof HttpResponse) {
+            console.log('All looks good');
+            // http response status code
+            console.log(event.status);
+
+            if (request.url.indexOf(AppConfig.endpoints.security) === -1) {
+              this.authenticationService.RefreshToken().subscribe();
+            }
+          }
+        },
+        error => {
+          // http response status code
+          console.log('----response----');
+          console.log(request.url);
+          console.error('status code:');
+          console.error(error.status);
+          console.error(error.message);
+          console.log('--- end of response---');
+
+          // if(request.url.indexOf('refreshToken') > -1)
+
+          if (error.status === 401) {
+            // auto logout if 401 response returned from api
+              this.authenticationService.logout();
+
+          } else if (error.status >= 500) {
+            this.commonService.showSnackBar('Error en el servidor.');
+            throw error;
+          }
+
+          const errorC = error.message || error.statusText;
+          return throwError(errorC);
+        }
+      )
+    );
+  }
+
+}

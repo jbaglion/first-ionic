@@ -1,27 +1,41 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { RouteReuseStrategy } from '@angular/router';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgxWebstorageModule } from 'ngx-webstorage';
 
-import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
-import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { CoreModule } from '@app/modules/core/core.module';
+import { AppComponent } from '@app/app.component';
 
-import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { CommonService } from './services/common.service';
+import { MAT_DATE_LOCALE } from '@angular/material';
+import { SharedModule } from './modules/shared/shared.module';
+
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { JwtInterceptor } from '@app/modules/security/helpers/jwt.interceptor.ts';
+import { ErrorInterceptor } from '@app/modules/core/helpers/error.interceptor';
 
 @NgModule({
-  declarations: [AppComponent],
-  entryComponents: [],
+  declarations: [
+    AppComponent,
+  ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(),
-    AppRoutingModule
+    BrowserAnimationsModule,
+    AppRoutingModule,
+    CoreModule,
+    SharedModule,
+    NgxWebstorageModule.forRoot()
   ],
+
   providers: [
-    StatusBar,
-    SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    CommonService,
+    { provide: MAT_DATE_LOCALE, useValue: 'es-AR' },
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [
+    AppComponent],
+
 })
-export class AppModule {}
+export class AppModule { }

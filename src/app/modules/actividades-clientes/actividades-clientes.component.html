@@ -1,0 +1,31 @@
+<div class="wrapper-toolbar">
+    <div class="logo">
+        <button class="mat-button-icon-small" mat-icon-button type="button" mat-button [routerLink]="['/afiliaciones']" matTooltip="Retroceder a la página anterior.">
+            <mat-icon [routerLink]="['/afiliaciones']">arrow_back</mat-icon>
+        </button>
+        <span class="sub-title">{{clientePotencial.razonSocial}}</span>
+    </div>
+</div>
+
+<mat-tab-group [selectedIndex]='selectTab'>
+    <mat-tab label="Gestiones">
+        <div class="mat-elevation-z8" style="padding: 25px;margin-top: 10px;">
+            <app-actividades-clientes-gestiones [clienteId]=clienteId></app-actividades-clientes-gestiones>
+        </div>
+    </mat-tab>
+    <mat-tab label="Consumos">
+        <div class="mat-elevation-z8" style="padding: 25px;margin-top: 10px;">
+            <app-actividades-clientes-consumos [clienteId]=clienteId></app-actividades-clientes-consumos>
+        </div>
+    </mat-tab>
+    <mat-tab label="Reclamos">
+        <div class="mat-elevation-z8" style="padding: 25px;margin-top: 10px;">
+            <app-actividades-clientes-reclamos [clienteId]=clienteId></app-actividades-clientes-reclamos>
+        </div>
+    </mat-tab>
+    <mat-tab label="Cuenta Corriente">
+        <div class="mat-elevation-z8" style="padding: 25px;margin-top: 10px;">
+            <app-actividades-clientes-cuentacorriente [clienteId]=clienteId></app-actividades-clientes-cuentacorriente>
+        </div>
+    </mat-tab>
+</mat-tab-group>
