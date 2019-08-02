@@ -1,24 +1,24 @@
-<mat-form-field class="margin-lr5">
+<mat-form-field class="ml-5 mr-5">
     <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar..." type="text" [formControl]="descripcionInput" name="Descripcion">
 </mat-form-field>
-<mat-form-field class="margin-lr5">
+<mat-form-field class="ml-5 mr-5">
     <input matInput [matDatepicker]="picker1" placeholder="Fecha Desde" [formControl]="desde" name="dpDesde">
     <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
     <mat-datepicker #picker1></mat-datepicker>
 </mat-form-field>
-<mat-form-field class="margin-lr5">
+<mat-form-field class="ml-5 mr-5">
     <input matInput [matDatepicker]="picker2" placeholder="Fecha Hasta" [formControl]="hasta" name="dpHasta">
     <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
     <mat-datepicker #picker2></mat-datepicker>
 </mat-form-field>
-<mat-form-field class="margin-lr5" *ngIf="userAcceso == '3' && modoGenerico">
+<mat-form-field class="ml-5 mr-5" *ngIf="userAcceso == '3' && modoGenerico">
     <mat-select placeholder="Vendedor" [formControl]="vendedorSelect">
         <mat-option *ngFor="let item of vendedores" [value]="item.id">
             {{item.descripcion}}
         </mat-option>
     </mat-select>
 </mat-form-field>
-<button mat-raised-button type="submit" (click)="GetReclamosFiltrados()">Buscar</button>
+<button mat-raised-button type="submit" (click)="GetReclamosFiltrados()" [disabled]="matTableLoadingService.activo$ | async">Buscar</button>
 
 <div class="mat-elevation-z8">
     <mat-table [dataSource]="mtClienteReclamos" matSort>
@@ -94,9 +94,9 @@
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="dcClienteReclamos "></mat-header-row>
-        <mat-row *matRowDef="let row; columns: dcClienteReclamos; "></mat-row>
+        <mat-row *matRowDef="let row; columns: dcClienteReclamos; " [hidden]="matTableLoadingService.activo$ | async"></mat-row>
     </mat-table>
-    <mat-paginator [pageSizeOptions]="[7, 10, 25, 100] "></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[7, 10, 25, 100] " [hidden]="mtClienteReclamos.data.length == 0 || (matTableLoadingService.activo$ | async)"></mat-paginator>
+    <app-mat-table-loading></app-mat-table-loading>
+    <app-mat-table-not-found [activo]="mtClienteReclamos.data.length === 0 && !(matTableLoadingService.activo$ | async)" ></app-mat-table-not-found>
 </div>
-
-<br />

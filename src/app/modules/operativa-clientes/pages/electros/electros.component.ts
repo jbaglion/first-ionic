@@ -1,6 +1,5 @@
 import { FormControl } from '@angular/forms';
-import { DomSanitizer} from '@angular/platform-browser';
-import { Component, ViewChild, ViewChildren, QueryList} from '@angular/core';
+import { Component, ViewChild, ViewChildren, QueryList, OnInit} from '@angular/core';
 import { MatTableDataSource, MatSort, MatDialog, MatPaginator } from '@angular/material';
 import { NgxGalleryOptions, NgxGalleryImage, NgxGalleryComponent } from 'ngx-gallery';
 
@@ -14,12 +13,14 @@ import { CommonService } from '@app/services/common.service';
   styleUrls: ['./electros.component.css']
 })
 
-export class ElectrosComponent  {
+export class ElectrosComponent implements OnInit  {
+  // Filtros para busqueda
   desde: FormControl;
   hasta: FormControl;
   descripcionInput: FormControl;
-  isLoading: Boolean = false;
 
+  // Datos para grilla
+  isLoading: Boolean = false;
   dcElectros: string[] = [
     'nroIncidente',
     'fechaIncidente',
@@ -32,6 +33,7 @@ export class ElectrosComponent  {
   mtElectros: MatTableDataSource<Electro> = new MatTableDataSource();
   private paginator: MatPaginator;
   private sort: MatSort;
+
   @ViewChildren(NgxGalleryComponent) query: QueryList<NgxGalleryComponent>;
 
   @ViewChild(MatSort, {static: false}) set matSort(ms: MatSort) {
@@ -47,19 +49,19 @@ export class ElectrosComponent  {
   constructor(
     private operativaClientesService: OperativaClientesService,
     private commonService: CommonService,
-    public dialog: MatDialog,
-    private domSanitization: DomSanitizer
+    public dialog: MatDialog
   ) {
     this.commonService.setTitulo('Visor ECGs');
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.desde = new FormControl(this.prevMonth(new Date()));
     this.hasta = new FormControl(new Date());
     this.descripcionInput = new FormControl();
     this.getElectros();
   }
-    setDataSourceAttributes() {
+
+  setDataSourceAttributes() {
     this.mtElectros.paginator = this.paginator;
     this.mtElectros.sort = this.sort;
   }
@@ -72,9 +74,7 @@ export class ElectrosComponent  {
 
   getElectros() {
     const that = this;
-
     that.isLoading = true;
-
     that.operativaClientesService
       .GetElectros$(this.desde.value, this.hasta.value)
       .subscribe(electros => {
@@ -93,7 +93,8 @@ export class ElectrosComponent  {
         that.isLoading = false;
         this.mtElectros = new MatTableDataSource(electros);
         this.setDataSourceAttributes();
-      });
+      },
+      err => { this.isLoading = false; });
   }
 
   buildGalleryOptionsObject(electro: Electro): NgxGalleryOptions[] {

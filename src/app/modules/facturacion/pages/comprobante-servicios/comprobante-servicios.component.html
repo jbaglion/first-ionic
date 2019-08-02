@@ -10,12 +10,12 @@
 
 
 <br>
-<mat-form-field class="margin-lr5">
+<mat-form-field class="ml-5 mr-5">
     <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar..." [formControl]="descripcionInput" name="Descripcion" />
 </mat-form-field>
 <div style="display: inline-block;">
     <button mat-raised-button (click)="exportToExcel()">Exportar</button>
-    <button mat-button (click)="downloadAllImages()">Descargar</button>
+    <button mat-raised-button color="accent" (click)="downloadAllImages()">Descargar</button>
 </div>
 <br>
 

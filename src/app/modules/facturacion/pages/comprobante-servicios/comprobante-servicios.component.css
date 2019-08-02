@@ -43,15 +43,6 @@
     vertical-align: baseline;
 }
 
-.margin-lr5 {
-    margin-left: 5px;
-    margin-right: 5px;
-}
-
-.mobile-label {
-    display: none;
-}
-
 .mat-column-nroIncidente {
     flex: 0 0 70px;
 }

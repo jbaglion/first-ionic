@@ -1,14 +1,3 @@
-// import { Component, Input } from '@angular/core';
-
-// @Component({
-//   selector: 'app-actividades-clientes-cuentacorriente',
-//   templateUrl: './cuenta.corriente.component.html',
-//   styleUrls: ['./cuenta.corriente.component.css']
-// })
-
-// export class CuentaCorrienteComponent {
-//   @Input() clienteId: number;
-// }
 import { DomSanitizer } from '@angular/platform-browser';
 import { Component, ViewChild, OnInit, Input } from '@angular/core';
 import { MatTableDataSource, MatSort, MatDialog, MatPaginator } from '@angular/material';

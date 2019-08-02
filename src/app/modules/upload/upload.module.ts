@@ -1,18 +1,14 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { SharedModule } from '@app/modules/shared/shared.module';
 import { UploadComponent } from './upload.component';
-import { MatButtonModule, MatDialogModule, MatListModule, MatProgressBarModule } from '@angular/material';
-import { DialogComponent } from './dialog/dialog.component';
-// import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; //GENERA ERROR, YA ESTA EN APP MODULE
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { UploadService } from './upload.service';
-import { HttpClientModule } from '@angular/common/http';
+import { DialogUploadComponent } from './dialog/dialog-upload.component';
 
 @NgModule({
-  imports: [CommonModule, MatButtonModule, MatDialogModule, MatListModule, FlexLayoutModule, HttpClientModule,MatProgressBarModule ], //BrowserAnimationsModule
-  declarations: [UploadComponent, DialogComponent],
-  exports: [UploadComponent],
-  entryComponents: [DialogComponent], // Add the DialogComponent as entry component
-  providers: [UploadService]
+  declarations: [UploadComponent, DialogUploadComponent],
+  imports: [ SharedModule ],
+  exports: [UploadComponent, DialogUploadComponent],
+  providers: [UploadService],
+  entryComponents: [DialogUploadComponent]
 })
 export class UploadModule {}

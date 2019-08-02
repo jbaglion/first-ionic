@@ -48,7 +48,7 @@
             <tr>
                 <td>
                     <div *ngIf="gestion.adjunto != null && gestion.adjunto.archivo != null">
-                        <button mat-button (click)="eliminarAdjuntoActual()" matTooltip="Elimina el archivo actual y permite cargar otro.">Cambiar Adjunto
+                        <button mat-raised-button color="accent" (click)="eliminarAdjuntoActual()" matTooltip="Elimina el archivo actual y permite cargar otro.">Cambiar Adjunto
                             Actual</button>
                     </div>
                     <div *ngIf="gestion.adjunto == null || gestion.adjunto.archivo == null">
@@ -60,6 +60,6 @@
     </form>
 </mat-dialog-content>
 <mat-dialog-actions style="float:right ">
-    <button mat-button (click)="onNoClick() ">Cancelar</button>
+    <button mat-raised-button color="accent" (click)="onNoClick() ">Cancelar</button>
     <button mat-raised-button type="submit " (click)="guardarGestion() ">Guardar</button>
 </mat-dialog-actions>

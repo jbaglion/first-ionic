@@ -1,44 +1,4 @@
-.sub-title {
-    color: #2b51a1;
-    font-size: 14px;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
-}
 
-.wrapper-toolbar {
-    margin: auto;
-    align-items: center;
-    /* Flex */
-    display: flex;
-    justify-content: space-between;
-    flex-flow: row nowrap;
-    background-color: whitesmoke;
-    border-radius: 4px;
-    padding: 4px;
-    width: -moz-fit-content;
-    text-align: left;
-    margin-top: 1px;
-}
-
-.wrapper-toolbar .logo {
-    justify-content: space-between;
-    align-items: center;
-    /* Flex */
-    display: flex;
-    flex-flow: row wrap;
-}
-
-.mat-button-icon-small {
-    width: 23px;
-    height: 23px;
-    margin-left: 5px;
-    line-height: 26px;
-    margin-right: 10px !important;
-    margin-left: 10px !important;
-    color: #959595 !important;
-    background-color: inherit !important;
-}
-
-.mat-button-icon-small .mat-icon {
-    font-size: 16px;
-    vertical-align: baseline;
+.tab-container {
+  padding: 15px 25px 25px 25px;
 }

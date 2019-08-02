@@ -1,12 +1,3 @@
-.margin-lr5 {
-    margin-left: 5px;
-    margin-right: 5px;
-}
-
-.mobile-label {
-    display: none;
-}
-
 .mat-column-nroIncidente {
     flex: 0 0 200px;
 }
@@ -25,6 +16,11 @@
 
 .mat-column-verImagenesElectros {
     flex: 0 0 30px;
+}
+
+.mat-column-verImagenesElectros .mat-icon-button
+{
+  width: 0 !important;
 }
 
 @media(max-width: 600px) {
@@ -72,7 +68,7 @@
     .mat-column-subcarpeta {
         flex: auto !important;
     }
-    .mat-column-archivoECG {
+    .mat-column-verImagenesElectros {
         flex: auto !important;
     }
 }

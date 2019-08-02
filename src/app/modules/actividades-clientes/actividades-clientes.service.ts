@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 import { catchError, tap } from 'rxjs/operators';
 import { AppConfig } from '../../configs/app.config';
 import { Observable, of, throwError as observableThrowError } from 'rxjs';
@@ -21,6 +20,7 @@ export class ActividadesClientesService {
   consumosApiUrl: string;
   reclamosApiUrl: string;
   cuentaCorrienteApiUrl: string;
+  vendedoresApiUrl: string;
 
   clienteName: string;
 
@@ -30,6 +30,7 @@ export class ActividadesClientesService {
     this.consumosApiUrl = AppConfig.endpoints.api + 'ClienteConsumos';
     this.reclamosApiUrl = AppConfig.endpoints.api + 'ClienteReclamos';
     this.cuentaCorrienteApiUrl = AppConfig.endpoints.api + 'ClienteCuentaCorriente';
+    this.vendedoresApiUrl = AppConfig.endpoints.api + 'Vendedores';
   }
 
   private handleError<T>(operation = 'operation', result?: T, showMessage: boolean = true) {
@@ -59,8 +60,7 @@ export class ActividadesClientesService {
   }
 
   public getVendedores() {
-    const url = `${this.actividadesApiUrl}/GetVendedores`;
-    return this.httpClient.get<listable[]>(url).pipe(
+    return this.httpClient.get<listable[]>(this.vendedoresApiUrl).pipe(
       tap(() => LoggerService.log('fetched GetVendedores')),
       catchError(this.handleError<listable[]>('GetVendedores'))
     );

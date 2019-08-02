@@ -23,7 +23,7 @@ import { saveAs } from 'file-saver';
 
 export class BitacoraDetailComponent implements OnInit {
   @ViewChild(MatSort, {static: false}) sort: MatSort;
-  @ViewChild('ta_reg_descripcion', {static: true}) ta_reg_descripcion: ElementRef;
+  @ViewChild('ta_reg_descripcion', {static: false}) ta_reg_descripcion: ElementRef;
   @ViewChild(NgxGalleryComponent, {static: false}) query: QueryList<NgxGalleryComponent>;
 
   idRegistracionSeleccionada = 0;

@@ -1,31 +1,19 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MaterialModule } from '../../material.module';
+import { SharedModule } from '@app/modules/shared/shared.module';
 import { NgxGalleryModule } from 'ngx-gallery';
-
 import { OperativaClientesRoutingModule } from './operativa-clientes-routing.module';
-import { SharedModule } from './../shared/shared.module';
-import { OperativaClientesService } from './operativa-clientes.service';
 import { ElectrosComponent } from './pages/electros/electros.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { OperativaClientesService } from './operativa-clientes.service';
+
 @NgModule({
   declarations: [ElectrosComponent],
   imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MaterialModule,
-    OperativaClientesRoutingModule,
     SharedModule,
+    OperativaClientesRoutingModule,
     NgxGalleryModule,
-    FlexLayoutModule
   ],
-  exports: [
-    ElectrosComponent
-  ],
-  providers: [
-    OperativaClientesService
-  ],
+  exports: [ElectrosComponent],
+  providers: [OperativaClientesService]
 })
-export class OperativaClientesModule { }
+export class OperativaClientesModule {}
+

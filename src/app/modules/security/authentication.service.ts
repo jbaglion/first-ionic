@@ -1,117 +1,143 @@
 ﻿import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-import { Usuario } from './models/usuario.model';
-import { AppConfig } from '../../configs/app.config';
+import { AppConfig } from '@app/configs/app.config';
+import { Usuario, GrupoAccesosMicrositios, ForgotPasswordResult } from './models/index';
 import * as jwt_decode from 'jwt-decode';
+import { UsuarioRegister } from './models/register.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthenticationService {
-    private currentUserSubject: BehaviorSubject<Usuario>;
-    public currentUser: Observable<Usuario>;
-    securityUrl: string;
-    oldExranetUrl: string;
-    constructor(private http: HttpClient) {
-        this.currentUserSubject = new BehaviorSubject<Usuario>(JSON.parse(localStorage.getItem('currentUser')));
-        this.currentUser = this.currentUserSubject.asObservable();
+  private readonly CURRENT_USER: string = 'currentUser';
+  private currentUser: BehaviorSubject<Usuario>;
+  public currentUser$: Observable<Usuario>;
 
-        this.securityUrl = AppConfig.endpoints.security + 'Users/';
-        this.oldExranetUrl = AppConfig.endpoints.oldExranet;
+  constructor( private httpClient: HttpClient) {
+    this.currentUser = new BehaviorSubject<Usuario>(JSON.parse(localStorage.getItem(this.CURRENT_USER)));
+    this.currentUser$ = this.currentUser.asObservable();
+  }
+
+  public get currentUserValue(): Usuario {
+    return this.currentUser.value;
+  }
+
+  login(username: string, password: string) {
+    return this.httpClient
+      .post<Usuario>(`${AppConfig.endpoints.security}users/Authenticate`, { username, password })
+      .pipe(
+        map(user => {
+          // login successful if there's a jwt token in the response
+          if (user && user.tokenInfo && user.tokenInfo.accessToken) {
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
+            localStorage.setItem( this.CURRENT_USER, JSON.stringify(user) );
+            this.currentUser.next(user);
+          }
+
+          return user;
+        })
+      );
+  }
+
+  loginByToken(token: string) {
+    return this.httpClient
+      .post<any>(`${AppConfig.endpoints.security}users/authenticateByToken`, { token })
+      .pipe(
+        map(user => {
+          // login successful if there's a jwt token in the response
+          if (user && user.token) {
+            // store user details and jwt token in local storage to keep user logged in between page refreshes
+            localStorage.setItem(
+              this.CURRENT_USER,
+              JSON.stringify(user)
+            );
+            this.currentUser.next(user);
+          }
+
+          return user;
+        })
+      );
+  }
+
+  logout() {
+    // remove user from local storage to log user out
+    localStorage.removeItem(this.CURRENT_USER);
+    this.currentUser.next(null);
+  }
+
+  getGruposMicrositios(): Observable<GrupoAccesosMicrositios[]> {
+    return this.httpClient
+      .get<GrupoAccesosMicrositios[]>(`${AppConfig.endpoints.security}users/micrositios`)
+      .pipe(
+        map(grupoMicrositios => {
+          const currentUser = this.currentUserValue;
+          currentUser.micrositiosV1 = [];
+          grupoMicrositios.forEach(gm => {
+            gm.accesosMicrositios.forEach(am => {
+              if (am.urlV1 != '') {
+                currentUser.micrositiosV1.push(am);
+              }
+            });
+          });
+          localStorage.setItem(this.CURRENT_USER, JSON.stringify(currentUser));
+          this.currentUser.next(currentUser);
+          return grupoMicrositios;
+        })
+      );
+  }
+
+  getTokenExpirationDate(token: string): Date {
+    const decoded = jwt_decode(token);
+
+    if (decoded.exp === undefined) {
+      return null;
+    }
+    const date = new Date(0);
+    date.setUTCSeconds(decoded.exp);
+    return date;
+  }
+
+  isTokenExpired(token?: string): boolean {
+    if (!token) {
+      token = this.currentUserValue.tokenInfo.accessToken;
+    }
+    if (!token) {
+      return true;
     }
 
-    public get currentUserValue(): Usuario {
-        return this.currentUserSubject.value;
+    const date = this.getTokenExpirationDate(token);
+    if (date === undefined) {
+      return false;
     }
+    return !(date.valueOf() > new Date().valueOf());
+  }
 
-    login(username: string, password: string) {
-        return this.http.post<any>(`${this.securityUrl}authenticate`, { username, password })
-            .pipe(map(user => {
-                // login successful if there's a jwt token in the response
-                if (user && user.token) {
-                    // store user details and jwt token in local storage to keep user logged in between page refreshes
-                    localStorage.setItem('currentUser', JSON.stringify(user));
-                    this.currentUserSubject.next(user);
-                }
+  forgotPassword(pEmail: string): Observable<ForgotPasswordResult> {
+    return this.httpClient
+      .post<ForgotPasswordResult>(`${AppConfig.endpoints.security}users/ForgotPassword`, { email: pEmail })
+      .pipe(
+        map(forgotPasswordResult => {
+          return forgotPasswordResult;
+        })
+      );
+  }
 
-                return user;
-            }));
-    }
+  register(register: UsuarioRegister): Observable<void> {
+    const body = JSON.stringify(register);
+    const headerOptions = new HttpHeaders({ 'Content-Type': 'application/json' });
+    return this.httpClient
+      .post<void>(`${AppConfig.endpoints.security}users/Register`, body, { headers: headerOptions });
+  }
 
-    loginByToken(token: string) {
-        return this.http.post<any>(`${this.securityUrl}authenticateByToken`, { token })
-            .pipe(map(user => {
-                // login successful if there's a jwt token in the response
-                if (user && user.token) {
-                    // store user details and jwt token in local storage to keep user logged in between page refreshes
-                    localStorage.setItem('currentUser', JSON.stringify(user));
-                    this.currentUserSubject.next(user);
-                }
+  getAccesosCurrentUser(): number {
+    return this.currentUserValue.accesos.find(a => a.pagina == this.getCurrentPageId() ).codigo;
+  }
 
-                return user;
-            }));
-    }
+  setCurrentPageId(pageId: number) {
+    sessionStorage.setItem('currentPageId', pageId.toString());
+  }
 
-    RefreshToken() {
-        const url = `${this.securityUrl}refreshToken`;
-        const headerOptions = new HttpHeaders({ 'Content-Type': 'application/json', 'Authorization': `${this.currentUserValue.token}`,
-                                                'Micrositio': `${this.currentUserValue.micrositio}` });
-        return this.http.get<any>(url, { headers: headerOptions }).pipe(map(user => {
-            // login successful if there's a jwt token in the response
-            if (user && user.token) {
-                // store user details and jwt token in local storage to keep user logged in between page refreshes
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                this.currentUserSubject.next(user);
-                console.log('RefreshToken');
-                console.log(user.token);
-                console.log(this.currentUserValue.token);
-            }
-            return user;
-        }));
-    }
-
-
-    loginBase64(base64: string) {
-        return this.http.post<any>(`${this.securityUrl}authenticateBase64`, { base64 })
-            .pipe(map(user => {
-                // login successful if there's a jwt token in the response
-                if (user && user.token) {
-                    // store user details and jwt token in local storage to keep user logged in between page refreshes
-                    localStorage.setItem('currentUser', JSON.stringify(user));
-                    this.currentUserSubject.next(user);
-                }
-                return user;
-            }));
-    }
-
-    logout() {
-        // remove user from local storage to log user out
-        localStorage.removeItem('currentUser');
-        this.currentUserSubject.next(null);
-        window.location.href = this.oldExranetUrl + 'Login?logout=true';
-    }
-
-    getTokenExpirationDate(token: string): Date {
-        const decoded = jwt_decode(token);
-
-        if (decoded.exp === undefined) { return null; }
-
-        const date = new Date(0);
-        date.setUTCSeconds(decoded.exp);
-        return date;
-    }
-
-    isTokenExpired(token?: string): boolean {
-        if (!token) {
-            token = this.currentUserValue.token;
-        }
-        if (!token) {
-            return true;
-        }
-
-        const date = this.getTokenExpirationDate(token);
-        if (date === undefined) { return false; }
-        return !(date.valueOf() > new Date().valueOf());
-    }
+  getCurrentPageId(): number {
+    return parseInt(sessionStorage.getItem('currentPageId'));
+  }
 }

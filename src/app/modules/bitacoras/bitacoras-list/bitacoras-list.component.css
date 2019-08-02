@@ -1,9 +1,10 @@
-table {
-    width: 100%;
+.bitacora-list-container
+{
+  padding: 15px 25px 25px 25px;
 }
 
-.mobile-label {
-    display: none;
+table {
+    width: 100%;
 }
 
 .mat-column-nro {

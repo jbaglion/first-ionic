@@ -14,15 +14,17 @@ import { ClientePotencial } from 'src/app/models/cliente-potencial.model';
 
 @Injectable()
 export class AfiliacionesService {
+  pamiUrl: string;
+  afiliacionesApiUrl: string;
+  vendedoresApiUrl: string;
 
-    constructor(private httpClient: HttpClient, public snackBar: MatSnackBar) {
-        this.afiliacionesApiUrl = AppConfig.endpoints.api + 'Afiliaciones';
-        this.pamiUrl = AppConfig.endpoints.pami;
-        this.tituloAfiliacionSubject = new BehaviorSubject<string>('Afiliaciones');
-        this.tituloAfiliacion = this.tituloAfiliacionSubject.asObservable();
-    }
-    pamiUrl: string;
-    afiliacionesApiUrl: string;
+  constructor(private httpClient: HttpClient, public snackBar: MatSnackBar) {
+    this.afiliacionesApiUrl = AppConfig.endpoints.api + 'Afiliaciones';
+    this.pamiUrl = AppConfig.endpoints.pami;
+    this.tituloAfiliacionSubject = new BehaviorSubject<string>('Afiliaciones');
+    this.tituloAfiliacion = this.tituloAfiliacionSubject.asObservable();
+    this.vendedoresApiUrl = AppConfig.endpoints.api + 'Vendedores';
+  }
 
     public tituloAfiliacion: Observable<string>;
     private tituloAfiliacionSubject: BehaviorSubject<string>;
@@ -56,8 +58,7 @@ export class AfiliacionesService {
     }
 
     getVendedores() {
-        const url = `${this.afiliacionesApiUrl}/GetVendedores`;
-        return this.httpClient.get<listable[]>(url).pipe(
+        return this.httpClient.get<listable[]>(this.vendedoresApiUrl).pipe(
             tap(() => LoggerService.log('fetched GetVendedores')),
             catchError(AfiliacionesService.handleError<listable[]>('GetVendedores'))
         );

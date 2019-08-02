@@ -1,7 +1,7 @@
 {
-  "name": "codelab-capacitor-preview",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
+    "name": "ExtranetApps",
+    "integrations": {
+        "capacitor": {}
+    },
+    "type": "angular"
 }

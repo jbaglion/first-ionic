@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { DialogComponent } from './dialog/dialog.component';
+import { DialogUploadComponent } from './dialog/dialog-upload.component';
 import { UploadService } from './upload.service';
 
 @Component({
@@ -48,7 +48,7 @@ export class UploadComponent  {
   }
 
   public openUploadDialog() {
-    const dialogRef = this.dialog.open(DialogComponent ,
+    const dialogRef = this.dialog.open(DialogUploadComponent ,
       { width: '50%',
       height: '50%',
       data: {

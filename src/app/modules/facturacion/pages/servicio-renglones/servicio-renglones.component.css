@@ -26,10 +26,6 @@ table {
     width: 100%;
 }
 
-.mobile-label {
-    display: none;
-}
-
 @media(max-width: 600px) {
     .mobile-label {
         width: 85px;

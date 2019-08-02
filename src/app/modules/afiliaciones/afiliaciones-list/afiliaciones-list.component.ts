@@ -5,39 +5,32 @@ import { MatTableDataSource, MatSort, MatDialog, MatPaginator } from '@angular/m
 
 import { AfiliacionesService } from '../afiliaciones.service';
 import { CommonService } from '@app/services/common.service';
-import { AuthenticationService } from '../../security/authentication.service';
+import { AuthenticationService } from '@app/modules/security/authentication.service';
 
 import { listable } from 'src/app/models/listable.model';
 import { AfiliacionesDetailComponent } from '../afiliaciones-detail/afiliaciones-detail.component';
 import { ClientePotencial, ClientePotencialForExcel } from 'src/app/models/cliente-potencial.model';
 import { PotencialExitoComponent } from '../dialog-potencial-exito/dialog-potencial-exito.component';
 import { ExportMatTableToXlxs } from '@app/modules/shared/helpers/export-mat-table-to-xlxs';
+import { MatTableLoadingService } from '@app/modules/shared/services/mat-table-loading.service';
 
 @Component({
   selector: 'app-afiliaciones-list',
   templateUrl: './afiliaciones-list.component.html',
-  styleUrls: ['./afiliaciones-list.component.css']
+  styleUrls: ['./afiliaciones-list.component.css'],
+  providers: [ MatTableLoadingService ]
 })
 
 export class AfiliacionesListComponent implements OnInit {
-
-  dcClientesPotencialesBasic: string[] = ['nombreComercial', 'rubro', 'razonSocial', 'cuit',
-    'domicilio', 'localidad', 'credencialID', 'importeMensual', 'estado', 'actividad'];
-  dcClientesPotenciales: string[] = this.dcClientesPotencialesBasic;
-
-  mtClientesPotenciales: MatTableDataSource<ClientePotencial>;
-
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: false}) sort: MatSort;
-
-  userToken: string;
+  //Seguridad
   userAcceso: string;
 
-  vendedores: listable[] = [{ descripcion: 'Todos', id: '0' }]; // For fix error load.
+  // Filtros para busqueda
+  descripcionInput: FormControl;
   tiposClientesSelect: FormControl;
   vendedoresSelect: FormControl;
-  descripcionInput: FormControl;
 
+  // Listados para combos
   tiposClientes: listable[] = [
     { descripcion: 'Todos', id: '0' },
     { descripcion: 'Potenciales', id: '1' },
@@ -46,6 +39,25 @@ export class AfiliacionesListComponent implements OnInit {
     { descripcion: 'Inactivos', id: '4' },
     { descripcion: 'Suspendidos', id: '5' }
   ];
+  vendedores: listable[] = [{ descripcion: 'Todos', id: '0' }];
+
+  // Datos para grilla
+  dcClientesPotencialesBasic: string[] = [
+    'nombreComercial',
+    'rubro',
+    'razonSocial',
+    'cuit',
+    'domicilio',
+    'localidad',
+    'credencialID',
+    'importeMensual',
+    'estado',
+    'actividad'
+  ];
+  dcClientesPotenciales: string[] = this.dcClientesPotencialesBasic;
+  mtClientesPotenciales: MatTableDataSource<ClientePotencial> = new MatTableDataSource();
+  private paginator: MatPaginator;
+  private sort: MatSort;
   tooltipExito: listable[] = [
     { descripcion: 'Todos', id: '0' },
     { descripcion: 'Cambiar potencial de Exito', id: '1' },
@@ -63,46 +75,61 @@ export class AfiliacionesListComponent implements OnInit {
     { descripcion: 'Suspendidos', icon: 'pause_circle_outline', color: 'accent' }
   ];
 
+  @ViewChild(MatSort, {static: false}) set matSort(ms: MatSort) {
+    this.sort = ms;
+    this.setDataSourceAttributes();
+  }
 
+  @ViewChild(MatPaginator, {static: false}) set matPaginator(mp: MatPaginator) {
+    this.paginator = mp;
+    this.setDataSourceAttributes();
+  }
 
   constructor(
     private afiliacionesService: AfiliacionesService,
     private authenticationService: AuthenticationService,
     private commonService: CommonService,
+    public matTableLoadingService: MatTableLoadingService,
     public dialog: MatDialog,
-    private router: Router) {
-
+    private router: Router
+  ) {
     this.commonService.setTitulo('Clientes Potenciales');
-
-    this.descripcionInput = new FormControl();
-    this.tiposClientesSelect = new FormControl(this.tiposClientes[0].id);
-    this.vendedoresSelect = new FormControl(this.vendedores[0].id);
-    this.afiliacionesService.getVendedores().subscribe(data => {
-      this.vendedores = data;
-    });
-
-    this.userAcceso = this.authenticationService.currentUserValue.acceso;
   }
 
   ngOnInit() {
-    this.afiliacionesService.getClientePotencial(this.tiposClientes[0].id, '').subscribe(data => {
-      this.mtClientesPotenciales = new MatTableDataSource(data);
-      this.mtClientesPotenciales.paginator = this.paginator;
-      this.mtClientesPotenciales.sort = this.sort;
-    });
+      this.userAcceso = this.authenticationService.getAccesosCurrentUser().toString();
+
+    this.descripcionInput = new FormControl('');
+    this.tiposClientesSelect = new FormControl(this.tiposClientes[0].id);
+    this.vendedoresSelect = new FormControl(this.vendedores[0].id);
+    this.afiliacionesService
+      .getVendedores()
+      .subscribe(data => {
+        this.vendedores = data;
+      });
+
+      this.getClientes(this.tiposClientes[0].id, '');
+  }
+
+  setDataSourceAttributes() {
+    this.mtClientesPotenciales.paginator = this.paginator;
+    this.mtClientesPotenciales.sort = this.sort;
   }
 
   applyFilter(filterValue: string) {
-    if (filterValue != null && filterValue != '') {
-      filterValue = filterValue.trim();
-      filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-      this.mtClientesPotenciales.filter = filterValue;
-    }
+    filterValue = filterValue.trim();
+    filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+    this.mtClientesPotenciales.filter = filterValue;
   }
 
-  GetClientesFiltrados() {
-    this.afiliacionesService.getClientePotencial(this.tiposClientesSelect.value, this.vendedoresSelect.value).subscribe(
-      data => {
+  getClientes(tipoCliente: string, vendedor: string) {
+    this.matTableLoadingService.activar();
+    this.afiliacionesService
+      .getClientePotencial(tipoCliente, vendedor)
+      .subscribe( data => {
+        if (data == null) {
+          return;
+        }
         if (this.tiposClientesSelect.value == 5) {
           this.dcClientesPotenciales = this.dcClientesPotencialesBasic.concat('potencialExito', 'motivoSuspension');
           this.dcClientesPotenciales.splice(this.dcClientesPotenciales.indexOf('domicilio'), 1);
@@ -112,11 +139,10 @@ export class AfiliacionesListComponent implements OnInit {
           this.dcClientesPotenciales = this.dcClientesPotencialesBasic;
         }
         this.mtClientesPotenciales.data = data;
-        // this.renderedDataFull = data;
-
-        this.applyFilter(this.descripcionInput.value);
-
-      });
+        this.setDataSourceAttributes();
+        this.matTableLoadingService.desactivar();
+      },
+      err => { this.matTableLoadingService.desactivar(); } );
   }
 
   openDialogCliente(paramClienteId: number = 0, paramClienteEstado: number = 1, ): void {
@@ -148,7 +174,7 @@ export class AfiliacionesListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result == 'updated') {
-        this.GetClientesFiltrados();
+        this.getClientes(this.tiposClientesSelect.value, this.vendedoresSelect.value);
       }
     });
   }

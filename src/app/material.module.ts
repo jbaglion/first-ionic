@@ -1,3 +1,5 @@
+import { NgModule } from '@angular/core';
+
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -24,69 +26,40 @@ import {
   MatDatepickerModule,
   MatNativeDateModule,
   MatCheckboxModule,
-  MatExpansionModule,
+  MatExpansionModule
 } from '@angular/material';
 
-import {NgModule} from '@angular/core';
+const modules = [
+  MatButtonModule,
+  MatMenuModule,
+  MatIconModule,
+  MatCardModule,
+  MatSliderModule,
+  MatProgressBarModule,
+  MatAutocompleteModule,
+  MatInputModule,
+  MatGridListModule,
+  MatSnackBarModule,
+  MatProgressSpinnerModule,
+  MatTooltipModule,
+  MatListModule,
+  MatDialogModule,
+  MatToolbarModule,
+  MatTableModule,
+  MatTabsModule,
+  MatSortModule,
+  MatPaginatorModule,
+  MatSidenavModule,
+  MatFormFieldModule,
+  MatSelectModule,
+  MatDatepickerModule,
+  MatNativeDateModule,
+  MatCheckboxModule,
+  MatExpansionModule
+];
 
 @NgModule({
-  imports: [
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    MatCardModule,
-    MatSliderModule,
-    MatProgressBarModule,
-    MatAutocompleteModule,
-    MatInputModule,
-    MatGridListModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule,
-    MatTooltipModule,
-    MatListModule,
-    MatDialogModule,
-    MatToolbarModule,
-    MatTableModule,
-    MatTabsModule,
-    MatSortModule,
-    MatPaginatorModule,
-    MatSidenavModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatCheckboxModule,
-    MatExpansionModule
-  ],
-  exports: [
-    MatButtonModule,
-    MatMenuModule,
-    MatIconModule,
-    MatCardModule,
-    MatSliderModule,
-    MatProgressBarModule,
-    MatAutocompleteModule,
-    MatInputModule,
-    MatGridListModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule,
-    MatTooltipModule,
-    MatListModule,
-    MatDialogModule,
-    MatToolbarModule,
-    MatTableModule,
-    MatTabsModule,
-    MatSortModule,
-    MatPaginatorModule,
-    MatSidenavModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatCheckboxModule,
-    MatExpansionModule
-  ],
+  imports: [modules],
+  exports: [modules]
 })
-
-export class MaterialModule {
-}
+export class MaterialModule {}

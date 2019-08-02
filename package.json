@@ -44,6 +44,7 @@
         "ng-circle-progress": "^1.4.1",
         "ngx-gallery": "^5.10.0",
         "ngx-webstorage": "^4.0.1",
+        "ngx-toastr": "^10.0.2",
         "node": "^10.16.0",
         "rxjs": "^6.5.2",
         "ts-xlsx-export": "^1.0.1",

@@ -1,5 +1,5 @@
 {
-    "$schema": ".node_modules/@angular/cli/lib/config/schema.json",
+    "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
@@ -23,9 +23,10 @@
                             "src/assets",
                             "src/web.config"
                         ],
-                        "styles": [{ "input": "src/extranet-style.scss" },
-                            "src/styles.css",
-                            "node_modules/font-awesome/css/font-awesome.css"
+                        "styles": [
+                            "node_modules/font-awesome/css/font-awesome.css",
+                            "node_modules/ngx-toastr/toastr.css",
+                            { "input": "src/styles/extranet-style.scss" }
                         ],
                         "scripts": []
                     },

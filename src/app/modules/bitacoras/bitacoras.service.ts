@@ -5,9 +5,9 @@ import { AppConfig } from '../../configs/app.config';
 import { Observable, of } from 'rxjs';
 import { LoggerService } from '../../services/logger.service';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Bitacora } from 'src/app/models/bitacora.model';
-import { listable } from 'src/app/models/listable.model';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material';
+import { Bitacora } from '@app/models/bitacora.model';
+import { listable } from '@app/models/listable.model';
 
 @Injectable()
 export class BitacorasService {

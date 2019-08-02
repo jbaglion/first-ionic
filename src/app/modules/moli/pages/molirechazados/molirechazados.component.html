@@ -2,19 +2,19 @@
 <mat-form-field>
     <input matInput (keyup)="applyFilter($event.target.value)" [formControl]="descripcionInput" name="Descripcion" placeholder="Buscar...">
 </mat-form-field>
-<mat-form-field class="margin-lr5">
+<mat-form-field class="ml-5 mr-5">
     <input matInput [matDatepicker]="picker1" placeholder="Fecha Desde" [formControl]="desde" name="dpDesde">
     <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
     <mat-datepicker #picker1></mat-datepicker>
 </mat-form-field>
-<mat-form-field class="margin-lr5">
+<mat-form-field class="ml-5 mr-5">
     <input matInput [matDatepicker]="picker2" placeholder="Fecha Hasta" [formControl]="hasta" name="dpHasta">
     <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
     <mat-datepicker #picker2></mat-datepicker>
 </mat-form-field>
 
 <button mat-raised-button type="submit" (click)="getMoliRechazados()" [disabled]="isLoading">Buscar</button>
-<button mat-button (click)="exportToExcel()">Exportar</button>
+<button mat-raised-button color="accent" (click)="exportToExcel()">Exportar</button>
 <br>
 
 <div class="mat-elevation-z8">
