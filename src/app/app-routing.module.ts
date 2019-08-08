@@ -60,6 +60,11 @@ const routes: Routes = [
       path: 'facturacion',
       loadChildren: './modules/facturacion/facturacion.module#FacturacionModule',
       canActivate: [AuthGuard]
+      },
+      {
+        path: 'auditoriasmoviles',
+        loadChildren: './modules/auditorias-moviles/auditorias-moviles.module#AuditoriasMovilesModule',
+        canActivate: [AuthGuard]
       }
     ]
   },
