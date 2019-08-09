@@ -1,20 +1,15 @@
-<div [hidden]="modoGenerico">
-    <button mat-raised-button class="mb-10" (click)="verAuditoria('nuevo')">Nueva Auditoria</button>
-</div>
+<!-- <div [hidden]="modoGenerico"> -->
+<br>
+<br>
+<button mat-raised-button class="mb-10" (click)="verAuditoria('nuevo')">Nueva Auditoria</button>
+<!-- </div> -->
 
 <div [hidden]="!modoGenerico">
     <mat-form-field class="ml-5 mr-5">
         <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Buscar..." type="text" [formControl]="descripcionInput" name="Descripcion">
     </mat-form-field>
-    <mat-form-field class="ml-5 mr-5" style="max-width: 120px;">
-        <mat-select placeholder="Fecha" [formControl]="tipoFechaAuditoriaSelect">
-            <mat-option *ngFor="let item of tiposFechas" [value]="item.id">
-                {{item.descripcion}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
     <mat-form-field class="ml-5 mr-5 short-form-field">
-        <input matInput [matDatepicker]="picker1" placeholder="Fecha Desde" [formControl]="desde" name="dpDesde">
+        <input matInput [matDatepicker]="picker1" placeholder="Fecha" [formControl]="desde" name="dpDesde">
         <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
         <mat-datepicker #picker1></mat-datepicker>
     </mat-form-field>
@@ -34,6 +29,15 @@
     <button mat-raised-button type="submit" (click)="GetAuditoriasGenerales()" [disabled]="matTableLoadingService.activo$ | async">Buscar</button>
 </div>
 
+<!-- 'fecha',
+'dominioId',
+'chofer',
+'medico',
+'enfermero',
+'condicion',
+'edit',
+'delete' -->
+
 <div class="mat-elevation-z8">
     <mat-table [dataSource]="mtAuditoriasMoviles" matSort>
         <ng-container matColumnDef="fecha">
@@ -44,48 +48,38 @@
                 <span class="mobile-label">Fecha:</span>{{element.fecha | date: 'dd/MM/yyyy'}}
             </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="razonSocial">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Razon Social</mat-header-cell>
+        <ng-container matColumnDef="dominioId">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Patente</mat-header-cell>
             <mat-cell *matCellDef="let element">
-                <span class="mobile-label">Razon Social:</span> {{element.razonSocial}}
+                <span class="mobile-label">Patente:</span> {{element.dominioId}}
             </mat-cell>
         </ng-container>
-        <ng-container matColumnDef="tipoAuditoria">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Tipo de Auditoria</mat-header-cell>
+        <ng-container matColumnDef="chofer">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Chofer</mat-header-cell>
             <mat-cell *matCellDef="let element">
-                <span class="mobile-label">Tipo de Auditoria:</span> {{element.tipoAuditoria == null?'': element.tipoAuditoria.descripcion}}
+                <span class="mobile-label">Chofer:</span> {{element.chofer}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="medico">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Medico</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <span class="mobile-label">Medico:</span> {{element.medico}}
+            </mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="enfermero">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Enfermero</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <span class="mobile-label">Enfermero:</span> {{element.enfermero}}
+            </mat-cell>
+        </ng-container>
+        condicion
+        <ng-container matColumnDef="condicion">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Condicion</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+                <span class="mobile-label">Condicion:</span> {{element.condicion}}
             </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="observaciones">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>Observaciones</mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                <span class="mobile-label">Observaciones:</span> {{element.observaciones}}
-            </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="fechaRecontacto">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>
-                Fecha Recontacto
-            </mat-header-cell>
-            <mat-cell mat-cell *matCellDef="let element">
-                <span class="mobile-label">Fecha Recontacto:</span>{{element.fechaRecontacto | date: 'dd/MM/yyyy'}}
-            </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="adjunto">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Adjunto</mat-header-cell>
-            <mat-cell *matCellDef="let element">
-                <span class="mobile-label">Adjunto:</span>
-                <div *ngIf="element.adjunto != null && element.adjunto.archivo != null">
-                    <button mat-icon-button matTooltip='Ver archivo adjunto' style="padding-top: 8px;">
-                        <a [href]="element.adjunto.archivo | safe" target="_blank">
-                            <mat-icon>cloud_download</mat-icon>
-                        </a>
-                    </button>
-                </div>
-            </mat-cell>
-        </ng-container>
         <ng-container matColumnDef="edit">
             <mat-header-cell *matHeaderCellDef mat-sort-header>
                 Editar

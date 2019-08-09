@@ -37,13 +37,14 @@ export class AuditoriaDetailComponent {
     this.auditoria.id = dialogData.id === 'nuevo' ? 0 : parseFloat(dialogData.id);
     // this.auditoria.dominioId = parseFloat(dialogData.clienteId);
     this.auditoriasMovilesService.GetTiposAuditoria().subscribe(data => this.tiposAuditoria = data);
-
     this.auditoriaForm = new FormGroup({
-      fecha: new FormControl({ value: new Date(), disabled: false }, [Validators.required]),
-      tipoAuditoria: new FormControl({ value: '0', disabled: false }, [Validators.required]),
-      adjuntoArchivo: new FormControl({ value: null, disabled: this.auditoria.id !== 0 }),
-      observaciones: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.minLength(3)]),
-      fechaRecontacto: new FormControl({ value: new Date(), disabled: false }),
+      fecha: new FormControl({ value: new Date(), disabled: true }, [Validators.required]),
+      dominioId: new FormControl({ value: null, disabled: this.auditoria.id !== 0 }, [Validators.required]),
+      chofer: new FormControl({ value: null, disabled: this.auditoria.id !== 0 }),
+      medico: new FormControl({ value: null, disabled: this.auditoria.id !== 0 }),
+      enfermero: new FormControl({ value: null, disabled: this.auditoria.id !== 0 }),
+      condicion: new FormControl({ value: null, disabled: true })
+      // observaciones: new FormControl({ value: '', disabled: false }, [Validators.required, Validators.minLength(3)]),
     });
 
     // Nota: valido porque no se necesitan nuevas propiedades.
@@ -137,7 +138,7 @@ export class AuditoriaDetailComponent {
     this.dialogRef.close('ok');
   }
 
-  guardarAuditoria() {
+  iniciarAuditoria() {
     console.log(this.auditoriaForm.value);
     if (this.auditoriaForm.valid) {
 

@@ -6,12 +6,12 @@ export const AppConfig: any = {
   endpoints: {
     // localhost
     // security: 'https://localhost:44377/security/',
-    // api: 'https://localhost:44319/api/',
+    api: 'https://localhost:44319/api/',
     // oldExranet: 'http://localhost:2128/',
 
     // test
      security: 'http://192.168.5.115:5005/security/',
-     api: 'http://192.168.5.115:5006/api/',
+    //  api: 'http://192.168.5.115:5006/api/',
      oldExranet: 'http://192.168.5.115:5000/'
 
     // Produccion

@@ -14,27 +14,6 @@
     flex: 0 0 75px;
 }
 
-.mat-column-razonSocial {
-    flex: 0 0 150px;
-    margin-right: 10px;
-}
-
-.mat-column-tipoAuditoria {
-    flex: 0 0 150px;
-}
-
-.mat-column-observaciones {
-    flex: 0 0 *px;
-}
-
-.mat-column-fechaRecontacto {
-    flex: 0 0 95px;
-}
-
-.mat-column-adjunto {
-    flex: 0 0 80px;
-}
-
 .mat-column-edit {
     flex: 0 0 80px;
 }

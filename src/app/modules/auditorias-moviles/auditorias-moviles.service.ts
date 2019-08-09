@@ -17,7 +17,7 @@ import { ClienteCuentaCorriente } from 'src/app/models/cliente-cuentacorriente';
 export class AuditoriasMovilesService {
 
   actividadesApiUrl: string;
-  gestionesApiUrl: string;
+  auditoriasMovilesApiUrl: string;
   consumosApiUrl: string;
   reclamosApiUrl: string;
   cuentaCorrienteApiUrl: string;
@@ -27,7 +27,7 @@ export class AuditoriasMovilesService {
 
   constructor(private httpClient: HttpClient, public snackBar: MatSnackBar) {
     this.actividadesApiUrl = AppConfig.endpoints.api + 'AuditoriasMoviles';
-    this.gestionesApiUrl = AppConfig.endpoints.api + 'ClienteAuditorias';
+    this.auditoriasMovilesApiUrl = AppConfig.endpoints.api + 'AuditoriasMoviles';
     this.consumosApiUrl = AppConfig.endpoints.api + 'ClienteConsumos';
     this.reclamosApiUrl = AppConfig.endpoints.api + 'ClienteReclamos';
     this.cuentaCorrienteApiUrl = AppConfig.endpoints.api + 'ClienteCuentaCorriente';
@@ -69,22 +69,22 @@ export class AuditoriasMovilesService {
 
   //#region Auditorias
   public GetAuditorias(movilId: number): Observable<Auditoria[]> {
-    const url = `${this.gestionesApiUrl}/${movilId}`;
+    const url = `${this.auditoriasMovilesApiUrl}/${movilId}`;
     return this.httpClient.get<Auditoria[]>(url).pipe(
       tap(() => LoggerService.log('fetched GetAuditorias')),
       catchError(this.handleError<Auditoria[]>('obtener las Auditorias.'))
     );
   }
 
-  GetAuditoriasGenerales(tipoFecha: number, desde: Date, hasta: Date, movilId: number, modoAdmin: boolean )
+  GetAuditoriasGenerales(desde: Date, hasta: Date, usuario: string, movilId: number, modoAdmin: boolean )
   : Observable<Auditoria[]> {
     const params = new HttpParams()
-      .set('tipoFecha', tipoFecha.toString())
       .set('desde', desde.toDateString())
       .set('hasta', hasta.toDateString())
+      .set('usuario', usuario.toString())
       .set('modoAdmin', modoAdmin.toString());
 
-    const url = `${this.gestionesApiUrl}/GetAuditoriasGenerales/${movilId}`;
+    const url = `${this.auditoriasMovilesApiUrl}/GetAuditoriasGenerales/${movilId}`;
     return this.httpClient.get<Auditoria[]>(url, { params }).pipe(
       tap(() => LoggerService.log('fetched GetAuditorias')),
       catchError(this.handleError<Auditoria[]>('obtener las Auditorias Generales.'))
@@ -92,7 +92,7 @@ export class AuditoriasMovilesService {
   }
 
   public GetAuditoria(id: number): Observable<Auditoria> {
-    const url = `${this.gestionesApiUrl}/GetById/${id}`;
+    const url = `${this.auditoriasMovilesApiUrl}/GetById/${id}`;
     return this.httpClient.get<Auditoria>(url).pipe(
       tap(() => LoggerService.log(`fetched Auditoria id=${id}`)),
       catchError(this.handleError<Auditoria>('obtener la Auditoria'))
@@ -100,7 +100,7 @@ export class AuditoriasMovilesService {
   }
 
   public GetTiposAuditoria(): Observable<listable> {
-    const url = `${this.gestionesApiUrl}/GetTiposAuditoria`;
+    const url = `${this.auditoriasMovilesApiUrl}/GetTiposAuditoria`;
     return this.httpClient.get<listable>(url).pipe(
       tap(() => LoggerService.log('fetched GetTiposAuditoria')),
       catchError(this.handleError<listable>('obtener los tipos de Auditoria'))
@@ -108,7 +108,7 @@ export class AuditoriasMovilesService {
   }
 
   EliminarAuditoria(id: number) {
-    const url = `${this.gestionesApiUrl}/${id}`;
+    const url = `${this.auditoriasMovilesApiUrl}/${id}`;
     return this.httpClient.delete(url).pipe(
       tap(() => LoggerService.log('fetched EliminarAuditoria')),
       catchError(this.handleError('eliminar la Auditoria'))
@@ -117,7 +117,7 @@ export class AuditoriasMovilesService {
 
   public CreateAuditoria(gestion: Auditoria) {
     const isNew = gestion.id === 0;
-    const url = `${this.gestionesApiUrl}`;
+    const url = `${this.auditoriasMovilesApiUrl}`;
     const body = JSON.stringify(gestion);
     const headerOptions = new HttpHeaders({ 'Content-Type': 'application/json' });
     return this.httpClient.post(url, body, { headers: headerOptions }).pipe(

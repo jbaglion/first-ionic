@@ -26,25 +26,20 @@ export class AuditoriasComponent implements OnInit {
 
   // Filtros para busqueda
   descripcionInput: FormControl;
-  tipoFechaAuditoriaSelect: FormControl;
   desde: FormControl;
   hasta: FormControl;
   vendedorSelect: FormControl;
 
-  // Listados para combos
-  tiposFechas: listable [] = [
-    { descripcion: 'Realizadas', id: '0' },
-    { descripcion: 'Programadas', id: '1' }
-  ];
   vendedores: listable[] = [{ descripcion: 'Todos', id: '0' }];
 
   // Datos para grilla
   dcAuditoriasMoviles: string[] = [
     'fecha',
-    'tipoAuditoria',
-    'observaciones',
-    'fechaRecontacto',
-    'adjunto',
+    'dominioId',
+    'chofer',
+    'medico',
+    'enfermero',
+    'condicion',
     'edit',
     'delete'
   ];
@@ -67,7 +62,6 @@ export class AuditoriasComponent implements OnInit {
     private authenticationService: AuthenticationService,
     public matTableLoadingService: MatTableLoadingService,
     public dialog: MatDialog) {
-      debugger;
   }
 
   ngOnInit() {
@@ -77,7 +71,6 @@ export class AuditoriasComponent implements OnInit {
 
 
     this.descripcionInput = new FormControl('');
-    this.tipoFechaAuditoriaSelect = new FormControl(this.tiposFechas[0].id);
     this.desde = new FormControl(new Date(new Date().setFullYear(new Date().getFullYear() - 1)));
     this.hasta = new FormControl(new Date());
     this.vendedorSelect =  new FormControl(this.vendedores[0].id);
@@ -91,7 +84,7 @@ export class AuditoriasComponent implements OnInit {
           });
       }
 
-      this.dcAuditoriasMoviles.splice( 1, 0, 'razonSocial');
+      // this.dcAuditoriasMoviles.splice( 1, 0, 'razonSocial');
     }
     this.LoadData();
   }
@@ -134,7 +127,7 @@ export class AuditoriasComponent implements OnInit {
     }
 
     this.auditoriasMovilesService
-      .GetAuditoriasGenerales( this.tipoFechaAuditoriaSelect.value, this.desde.value, this.hasta.value, 0, modoAdmin)
+      .GetAuditoriasGenerales(this.desde.value, this.hasta.value, vendedor, 0, modoAdmin)
       .subscribe( data => {
         this.mtAuditoriasMoviles = new MatTableDataSource(data);
         this.setDataSourceAttributes();

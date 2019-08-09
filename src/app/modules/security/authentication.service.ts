@@ -1,9 +1,9 @@
 ﻿import { Injectable } from '@angular/core';
-import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppConfig } from '@app/configs/app.config';
-import { Usuario, GrupoAccesosMicrositios, ForgotPasswordResult } from './models/index';
+import { Usuario, GrupoAccesosMicrositios, ForgotPasswordResult, AccesoMicrositio } from './models/index';
 import * as jwt_decode from 'jwt-decode';
 import { UsuarioRegister } from './models/register.model';
 
@@ -79,6 +79,16 @@ export class AuthenticationService {
               }
             });
           });
+
+          const mockMicrositio: AccesoMicrositio = {
+            codigo: 9999,
+            jerarquia: 300,
+            titulo: 'Aditorias Moviles',
+            url: '/auditoriasmoviles/auditorias',
+            urlV1: ''
+          };
+          currentUser.micrositiosV1.push(mockMicrositio);
+
           localStorage.setItem(this.CURRENT_USER, JSON.stringify(currentUser));
           this.currentUser.next(currentUser);
           return grupoMicrositios;
@@ -130,7 +140,9 @@ export class AuthenticationService {
   }
 
   getAccesosCurrentUser(): number {
-    return this.currentUserValue.accesos.find(a => a.pagina == this.getCurrentPageId() ).codigo;
+    var as =  this.currentUserValue.accesos.find(a => a.pagina === this.getCurrentPageId());
+    if(as!= null)
+    return as.codigo;
   }
 
   setCurrentPageId(pageId: number) {
