@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 import { catchError, tap } from 'rxjs/operators';
 import { AppConfig } from '../../configs/app.config';
 import { Observable, of } from 'rxjs';
