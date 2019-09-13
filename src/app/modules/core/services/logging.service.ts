@@ -16,7 +16,7 @@ export class LoggingService {
 
   logError(message: string, stack: string, apiEndpoint: string, isServerError: boolean) {
     let currentUser = this.authenticationService.currentUserValue;
-    let that =this;
+    let that = this;
 
     this.httpClient.get(AppConfig.proxyCORSUrl  + AppConfig.getApiURL).subscribe(data => {
       that.messageToSend = {

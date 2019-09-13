@@ -131,7 +131,7 @@ export class ActividadesClientesService {
   //#endregion
 
   //#region Consumos
-  public GetConsumos(desde: Date, hasta: Date, vendedor: string, clienteId: number, modoAdmin: Boolean): Observable<ClienteConsumo[]> {
+  public GetConsumos(desde: Date, hasta: Date, vendedor: string, clienteId: number, modoAdmin: boolean): Observable<ClienteConsumo[]> {
 
     const params = new HttpParams()
       .set('desde', desde.toDateString())

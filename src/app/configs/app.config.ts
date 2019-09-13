@@ -31,7 +31,7 @@ export const AppConfig: any = {
   // votesLimit: 3,
   // topHeroesLimit: 4,
   snackBarDuration: 3700,
-  loggingWebHook: 'https://hooks.slack.com/services/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',
+  loggingWebHook: 'https://hooks.slack.com/services/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',
   getApiURL: 'https://api.ipify.org?format=json',
   proxyCORSUrl: 'https://cors-anywhere.herokuapp.com/',
   version: '2.0.0-rc'
